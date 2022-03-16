@@ -57,3 +57,51 @@ def restart_program(logger=None):
        logger.error('exception ' + traceback.format_exc())
    python = sys.executable
    os.execl(python, python, *sys.argv)
+
+   
+   
+   # 初期化
+# start_time: 最初の報告までの猶予(秒)
+# interval: 2回目以降報告までの猶予(秒)
+# tag: 監視対象を表す任意のtag
+
+self.panic_manager = PanicManager(logger=logger)
+self.panic_manager.register(tag='trader', start_time=5 * 60, interval=60)
+
+
+# 定期的に生存報告
+# ok: 正常かどうか。ボットごとにカスタマイズ
+
+if ok:
+    self.panic_manager.ping('trader')
+      
+      
+      #Docker上のbotを監視・再起動する方法
+      
+      
+      #前提と動作
+#Dockerのlogを監視し，logを出力しなくなったらコンテナを再起動します．
+#Dockerを使っていること
+#定期的に，logを出力するようになっていること（走らせているプログラムが，定期的に何かprintすれば良いです）
+#「botが停止している⇔logが出力されない」であること
+      
+import subprocess
+import time
+from datetime import datetime
+
+CONTAINER_ID  = '監視するコンテナIDを入れてください'
+
+print('start:' + str(datetime.now()))
+while True:
+    process = (subprocess.Popen('docker logs ' + CONTAINER_ID + ' --since="1m"', stdout=subprocess.PIPE,
+                           shell=True).communicate()[0]).decode('utf-8')
+    if not process:
+        process = (subprocess.Popen('docker restart ' + CONTAINER_ID, stdout=subprocess.PIPE,
+                            shell=True).communicate()[0]).decode('utf-8')
+        print('restart docker:' + str(datetime.now()))
+    time.sleep(60)
+   
+   
+   
+   
+   
